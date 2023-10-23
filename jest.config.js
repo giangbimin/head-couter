@@ -13,7 +13,6 @@ const customJestConfig = {
     '^services/(.*)$': '<rootDir>/src/services/$1',
     '^utils/(.*)$': '<rootDir>/src/utils/$1',
     '^constants/(.*)$': '<rootDir>/src/constants/$1',
-    '^pages/(.*)$': '<rootDir>/src/pages/$1',
     '^app/(.*)$': '<rootDir>/src/app/$1',
     '^context/(.*)$': '<rootDir>/src/context/$1',
     '^libs/(.*)$': '<rootDir>/src/libs/$1',

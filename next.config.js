@@ -1,24 +1,21 @@
 // @ts-nocheck
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+// const withBundleAnalyzer = require('@next/bundle-analyzer')({
+//   enabled: process.env.ANALYZE === 'true',
+// })
 
 require('dotenv').config()
 
-/**
- * @type {import('next').NextConfig}
- **/
-module.exports = withBundleAnalyzer({
-  env: {
-    BASE_URL: process.env.BASE_URL,
+const nextConfig = {
+  reactStrictMode: false,
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/jobs',
+        permanent: true,
+      },
+    ]
   },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/i,
-      issuer: /\.[jt]sx?$/,
-      use: ['@svgr/webpack'],
-    })
+}
 
-    return config
-  },
-})
+module.exports = nextConfig
