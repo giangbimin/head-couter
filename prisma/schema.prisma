@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+model Job {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String
+  title            String
+  summary          String
+  responsibilities String
+  requirements     String
+  skills           String
+  workEnvironment  String
+  salary           String
+  benefits         String
+  interviews       String
+  contact          String
+  company          String
+  isPublished      Boolean  @default(false)
+  deadline         DateTime
+  tags             String
+  hiddenColumns    String[]
+  createdAt        DateTime @default(now())
+}
+
+model JobApply {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobId     String   @db.ObjectId
+  email     String   @unique
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Interview {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobApplyId   String   @db.ObjectId
+  content      String
+  email        String
+  emailContent String
+  isSentEmail  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model InterviewSession {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  interviewId         String   @db.ObjectId
+  technicalQuestions  String
+  softSkillsQuestions String
+  mindSetQuestions    String
+  createdAt           DateTime @default(now())
+}

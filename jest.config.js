@@ -10,9 +10,11 @@ const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
     '^components/(.*)$': '<rootDir>/src/components/$1',
+    '^services/(.*)$': '<rootDir>/src/services/$1',
     '^utils/(.*)$': '<rootDir>/src/utils/$1',
     '^constants/(.*)$': '<rootDir>/src/constants/$1',
     '^pages/(.*)$': '<rootDir>/src/pages/$1',
+    '^app/(.*)$': '<rootDir>/src/app/$1',
     '^context/(.*)$': '<rootDir>/src/context/$1',
     '^libs/(.*)$': '<rootDir>/src/libs/$1',
   },
@@ -20,6 +22,7 @@ const customJestConfig = {
   testPathIgnorePatterns: [
     '<rootDir>/.next/',
     '<rootDir>/src/types/',
+    '<rootDir>/src/services/',
     '<rootDir>/node_modules/',
     '<rootDir>/scripts/',
     '<rootDir>/cypress/',
