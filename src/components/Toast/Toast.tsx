@@ -1,3 +1,5 @@
+'use client'
+
 import { Alert, AlertTitle, AlertIcon, AlertProps } from 'components/Alert'
 import { AlertBody } from 'components/Alert/AlertBody'
 import { AlertContent } from 'components/Alert/AlertContent'
