@@ -5,6 +5,8 @@
     "dev": "pnpm prisma generate && next",
     "build": "pnpm prisma generate && next build",
     "migrate:dev": "pnpm prisma generate dev --name init",
+    "migrate:pull": "pnpm prisma db pull",
+    "migrate:push": "pnpm prisma db push",
     "analyze": "ANALYZE=true pnpm build",
     "start": "next start",
     "test": "jest",

@@ -22,7 +22,7 @@ model Job {
   contact          String
   company          String
   isPublished      Boolean  @default(false)
-  deadline         DateTime
+  deadline         String
   tags             String
   hiddenColumns    String[]
   createdAt        DateTime @default(now())

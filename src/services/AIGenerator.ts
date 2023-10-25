@@ -1,17 +1,26 @@
 import { OpenAIMessage } from 'api'
 
 namespace JdFormatter {
-  export const messages: OpenAIMessage[] = [
-    {
-      role: 'system',
-      content:
-        "[no prose][Output only JSON]\nPlease serve as a language support model for software developers in the HRTech field, assisting them in data cleansing and aligning user inputs with the database model: { 'title': 'String, Job Title with level and Position', 'summary': 'String (not require), Job Summary depend on job title', 'responsibilities': 'String, List of responsibilities', 'requirements': 'String, List of requirements or qualifications', 'skills': 'String, List of requirement skills for work includes technical skills and soft skills', 'workEnvironment': 'String, work at office, remotely, english, ect', 'salary': 'String, salary range of the way to evaluate salary', 'benefits': 'String, List of benefits like leave annual, insurance, trip ect' , 'interviews':  'String, interview requirements and how many steps', 'company': 'String,  Information about the company, website, contact ...', 'deadline':'String, Application deadline for apply the job', 'contact': 'String, contact to person / Email address to apply or know more', 'tags': 'String, List automatically generated tags', } then processing a job description (JD), extract and return JSON data with available columns while excluding columns without relevant information. in each column if have many ideas please for each ideas separate by line breaks html code symbol",
-    },
-    {
-      role: 'assistant',
-      content: 'Please input the basic of job description?',
-    },
-  ]
+  export const messages = (
+    jobTitle: string,
+    description: string,
+  ): OpenAIMessage[] => {
+    return [
+      {
+        role: 'system',
+        content:
+          "[no prose][Output only JSON]\nPlease serve as a language support model for software developers in the HRTech field, assisting them in data cleansing and aligning user inputs with the database model: { 'title': 'String, Job Title with level and Position', 'summary': 'String (not require), Job Summary depend on job title', 'responsibilities': 'String, List of responsibilities', 'requirements': 'String, List of requirements or qualifications', 'skills': 'String, List of requirement skills for work includes technical skills and soft skills', 'workEnvironment': 'String, work at office, remotely, english, ect', 'salary': 'String, salary range of the way to evaluate salary', 'benefits': 'String, List of benefits like leave annual, insurance, trip ect' , 'interviews':  'String, interview requirements and how many steps', 'company': 'String,  Information about the company, website, contact ...', 'deadline':'String, Application deadline for apply the job', 'contact': 'String, contact to person / Email address to apply or know more', 'tags': 'String, List automatically generated tags', } then processing a job description (JD), extract and return JSON data with available columns while excluding columns without relevant information. in each column if have many ideas please for each ideas separate by line breaks html code symbol",
+      },
+      {
+        role: 'assistant',
+        content: 'Please input the basic of job description?',
+      },
+      {
+        role: 'user',
+        content: `jobTitle: ${jobTitle}\n description: ${description}`,
+      },
+    ]
+  }
 }
 
 namespace FieldGenerator {

@@ -6,7 +6,6 @@
 require('dotenv').config()
 
 const nextConfig = {
-  reactStrictMode: false,
   async redirects() {
     return [
       {

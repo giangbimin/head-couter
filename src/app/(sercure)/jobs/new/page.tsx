@@ -1,5 +1,5 @@
-import Header from 'app/components/Jobs/Create/Header'
-import Form from 'app/components/Jobs/Create/Form'
+import JobPage from 'app/components/Jobs/Create/JobPage'
+import { JobContextProvider } from 'context/job'
 
 export default function CreateJobPage() {
   return (
@@ -8,8 +8,9 @@ export default function CreateJobPage() {
         <div className="-m-1.5 overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
-              <Header />
-              <Form />
+              <JobContextProvider>
+                <JobPage />
+              </JobContextProvider>
             </div>
           </div>
         </div>

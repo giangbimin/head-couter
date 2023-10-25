@@ -1,136 +1,254 @@
-const Form = () => {
-  return (
-    <form className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 px-4 py-10 sm:px-6 lg:px-8 lg:py-14 gap-x-4">
-      <div>
-        <label htmlFor="title">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            Job title
-          </span>
-          <input
-            className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
-            id="title"
-            type="text"
-          />
-        </label>
-      </div>
+'use client'
 
-      <div>
-        <label htmlFor="deadline">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            deadline
-          </span>
-          <div className="mt-1">
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Prisma } from '@prisma/client'
+import { useJobContext } from 'context/job'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useRecommendationContext } from 'context/recommendation'
+
+const JobFormSchema = z.object({
+  title: z.string().min(1, 'title is required'),
+  deadline: z.string(),
+  summary: z.string().min(1, 'summary is required'),
+  responsibilities: z.string().min(1, 'responsibilities is required'),
+  requirements: z.string().min(1, 'responsibilities is required'),
+  contact: z.string().min(1, 'responsibilities is required'),
+  workEnvironment: z.string(),
+  salary: z.string(),
+  benefits: z.string(),
+  interviews: z.string(),
+  company: z.string(),
+  skills: z.string(),
+  tags: z.string(),
+})
+
+type FormField =
+  | 'summary'
+  | 'responsibilities'
+  | 'requirements'
+  | 'workEnvironment'
+  | 'benefits'
+  | 'interviews'
+  | 'skills'
+  | 'tags'
+const Form = () => {
+  const { formValues, createJob } = useJobContext()
+  const {
+    setTitle,
+    setFieldName,
+    setIsModalOpen,
+    resetForm,
+    fieldName,
+    descriptionValue,
+    setDescriptionValue,
+  } = useRecommendationContext()
+
+  const { register, handleSubmit, getValues, reset, setValue } = useForm({
+    defaultValues: formValues,
+    resolver: zodResolver(JobFormSchema),
+  })
+
+  useEffect(() => {
+    reset(formValues)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formValues])
+
+  useEffect(() => {
+    console.log(descriptionValue)
+    setValue(fieldName as FormField, descriptionValue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [descriptionValue])
+
+  const onSubmit = async () => {
+    const data = getValues() as Prisma.JobCreateInput
+    await createJob(data)
+  }
+
+  const showRecommendationForm = (field: FormField) => {
+    const data = getValues() as Prisma.JobCreateInput
+    const descriptionValue = data[field]
+    if (descriptionValue !== undefined) setDescriptionValue(descriptionValue)
+    setTitle(data.title)
+    setFieldName(field as string)
+    resetForm()
+    setIsModalOpen(true)
+  }
+
+  return (
+    <form className="min-w-full" onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col px-4 py-10 sm:px-6 lg:px-8 lg:py-14 gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
+          <label htmlFor="title">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              Job title
+            </span>
             <input
+              {...register('title')}
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
-              id="deadline"
-              name="deadline"
+              id="title"
               type="text"
             />
-          </div>
-        </label>
-      </div>
+          </label>
+          <label htmlFor="deadline">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              deadline
+            </span>
+            <div className="mt-1">
+              <input
+                className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                id="deadline"
+                name="deadline"
+                type="text"
+              />
+            </div>
+          </label>
+        </div>
 
-      <div>
         <label htmlFor="summary">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            summary
-          </span>
+          <div className="flex justify-between align-center">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              summary
+            </span>
+            <button
+              className="inline-flex justify-center items-center gap-2 rounded-md border-2 border-primary-200 font-semibold text-primary-500 hover:text-white hover:bg-primary-500 hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+              onClick={() => showRecommendationForm('summary')}
+            >
+              AI generate
+            </button>
+          </div>
+
           <div className="mt-1">
             <textarea
+              {...register('summary')}
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
               id="summary"
               name="summary"
+              placeholder="input job summary..."
               rows={3}
             />
           </div>
         </label>
-      </div>
 
-      <div>
-        <label htmlFor="textarea-1">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            responsibilities
-          </span>
+        <label htmlFor="responsibilities">
+          <div className="flex justify-between align-center">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              responsibilities
+            </span>
+            <button
+              className="inline-flex justify-center items-center gap-2 rounded-md border-2 border-primary-200 font-semibold text-primary-500 hover:text-white hover:bg-primary-500 hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+              onClick={() => showRecommendationForm('responsibilities')}
+            >
+              AI generate
+            </button>
+          </div>
+
           <div className="mt-1">
             <textarea
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+              {...register('responsibilities')}
               id="responsibilities"
               name="responsibilities"
+              placeholder="input job responsibilities..."
               rows={3}
             />
           </div>
         </label>
-      </div>
 
-      <div>
         <label htmlFor="requirements">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            requirements
-          </span>
+          <div className="flex justify-between align-center">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              requirements
+            </span>
+            <button
+              className="inline-flex justify-center items-center gap-2 rounded-md border-2 border-primary-200 font-semibold text-primary-500 hover:text-white hover:bg-primary-500 hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+              onClick={() => showRecommendationForm('requirements')}
+            >
+              AI generate
+            </button>
+          </div>
           <div className="mt-1">
             <textarea
+              {...register('requirements')}
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
               id="requirements"
               name="requirements"
+              placeholder="input job requirements..."
               rows={3}
             />
           </div>
         </label>
-      </div>
 
-      <div>
-        <label htmlFor="textarea-1">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            workEnvironment
-          </span>
+        <label htmlFor="workEnvironment">
+          <div className="flex justify-between align-center">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              work environment
+            </span>
+            <button
+              className="inline-flex justify-center items-center gap-2 rounded-md border-2 border-primary-200 font-semibold text-primary-500 hover:text-white hover:bg-primary-500 hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+              onClick={() => showRecommendationForm('workEnvironment')}
+            >
+              AI generate
+            </button>
+          </div>
           <div className="workEnvironment">
             <textarea
+              {...register('workEnvironment')}
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
               id="workEnvironment"
               name="workEnvironment"
+              placeholder="input job work environment EX: Remotely, 8h/day ..."
               rows={2}
             />
           </div>
         </label>
-      </div>
 
-      <div>
         <label htmlFor="salary">
           <span className="block mb-2 text-sm font-medium dark:text-white">
             salary
           </span>
           <div className="mt-1">
             <input
+              {...register('salary')}
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
               id="salary"
               name="salary"
+              placeholder="input salary..."
               type="text"
             />
           </div>
         </label>
-      </div>
-      <div>
         <label htmlFor="benefits">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            benefits
-          </span>
+          <div className="flex justify-between align-center">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              benefits
+            </span>
+            <button
+              className="inline-flex justify-center items-center gap-2 rounded-md border-2 border-primary-200 font-semibold text-primary-500 hover:text-white hover:bg-primary-500 hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800"
+              onClick={() => showRecommendationForm('benefits')}
+            >
+              AI generate
+            </button>
+          </div>
           <div className="mt-1">
             <textarea
+              {...register('benefits')}
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
               id="benefits"
               name="benefits"
+              placeholder="input benefits. Ex: 14 days leave annual..."
               rows={3}
             />
           </div>
         </label>
-      </div>
-      <div>
         <label htmlFor="interviews">
           <span className="block mb-2 text-sm font-medium dark:text-white">
             interviews
           </span>
           <div className="mt-1">
             <textarea
+              {...register('interviews')}
               className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
               id="interviews"
               name="interviews"
@@ -138,36 +256,36 @@ const Form = () => {
             />
           </div>
         </label>
-      </div>
-      <div>
-        <label htmlFor="contact">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            contact
-          </span>
-          <div className="mt-1">
-            <input
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
-              id="contact"
-              name="contact"
-              type="text"
-            />
-          </div>
-        </label>
-      </div>
-      <div>
-        <label htmlFor="company">
-          <span className="block mb-2 text-sm font-medium dark:text-white">
-            company
-          </span>
-          <div className="mt-1">
-            <input
-              className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
-              id="company"
-              name="company"
-              type="text"
-            />
-          </div>
-        </label>
+        <div className="grid md:grid-cols-2 gap-6">
+          <label htmlFor="contact">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              Recruiter contact
+            </span>
+            <div className="mt-1">
+              <input
+                {...register('contact')}
+                className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                id="contact"
+                name="contact"
+                type="text"
+              />
+            </div>
+          </label>
+          <label htmlFor="company">
+            <span className="block mb-2 text-sm font-medium dark:text-white">
+              Company information
+            </span>
+            <div className="mt-1">
+              <input
+                {...register('company')}
+                className="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 sm:p-4 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                id="company"
+                name="company"
+                type="text"
+              />
+            </div>
+          </label>
+        </div>
       </div>
 
       <div className="mt-6 grid">
