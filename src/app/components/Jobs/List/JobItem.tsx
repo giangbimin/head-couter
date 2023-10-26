@@ -12,7 +12,7 @@ type JobProps = {
   status: string
 }
 
-const JobItem: FC<JobProps> = ({
+export const JobItem: FC<JobProps> = ({
   jId,
   position,
   tags,
@@ -84,4 +84,3 @@ const JobItem: FC<JobProps> = ({
     </tr>
   )
 }
-export default JobItem

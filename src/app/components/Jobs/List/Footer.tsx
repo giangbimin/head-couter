@@ -1,4 +1,4 @@
-const Footer = () => {
+export const Footer = () => {
   return (
     <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-gray-700">
       <div className="max-w-sm space-y-3">
@@ -7,7 +7,7 @@ const Footer = () => {
           <option>2</option>
           <option>3</option>
           <option>4</option>
-          <option selected>5</option>
+          <option>5</option>
           <option>6</option>
         </select>
       </div>
@@ -58,4 +58,3 @@ const Footer = () => {
     </div>
   )
 }
-export default Footer

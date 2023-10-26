@@ -4,10 +4,10 @@ import useSWR from 'swr'
 import { Prisma } from '@prisma/client'
 import Loading from 'app/loading'
 import { useSearchParams } from 'next/navigation'
-import JobColumns from './JobColumns'
-import JobItem from './JobItem'
+import { TableColumns } from './TableColumns'
+import { JobItem } from './JobItem'
 
-const JobList = () => {
+export const TableList = () => {
   const searchParams = useSearchParams()
   const title = searchParams.get('title') || ''
   const page = searchParams.get('page') || '1'
@@ -31,7 +31,7 @@ const JobList = () => {
   const jobs = data as Prisma.JobCreateInput[]
   return (
     <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
-      <JobColumns />
+      <TableColumns />
       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
         {jobs.map((job) => (
           <JobItem
@@ -50,4 +50,3 @@ const JobList = () => {
     </table>
   )
 }
-export default JobList

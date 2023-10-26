@@ -1,4 +1,4 @@
-const JobColumns = () => {
+export const TableColumns = () => {
   return (
     <thead className="bg-gray-50 dark:bg-slate-800">
       <tr>
@@ -45,4 +45,3 @@ const JobColumns = () => {
     </thead>
   )
 }
-export default JobColumns
