@@ -6,7 +6,6 @@ import cx from 'classnames'
 import { useRouter } from 'next/router'
 import { WithChildren } from 'types/common'
 import { Logo } from 'components/Logo'
-import { Header } from 'components/Header'
 import { useAuthContext } from 'context/auth'
 import { useEffect, useState } from 'react'
 import { IconBookOpen } from 'components/icons/components/IconBookOpen'
@@ -77,7 +76,6 @@ export const Layout = ({ children }: WithChildren) => {
         </div>
       </aside>
       <main className="flex-1">
-        <Header />
         <div className="px-8 py-6">
           <div className="flex space-y-6 flex-col max-w-7xl w-full mx-auto">
             {children}
