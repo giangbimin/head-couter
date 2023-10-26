@@ -1,20 +1,18 @@
-import JobPage from 'app/components/Jobs/Create/JobPage'
+import { BaseLayout } from 'app/components/Layout/BaseLayout'
+import { Header, Form, RecommendationForm } from 'app/components/Jobs/Create'
 import { JobContextProvider } from 'context/job'
+import { RecommendationContextProvider } from 'context/recommendation'
 
 export default function CreateJobPage() {
   return (
-    <div className="max-w-[85rem] w-full px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
-      <div className="flex flex-col">
-        <div className="-m-1.5 overflow-x-auto">
-          <div className="p-1.5 min-w-full inline-block align-middle">
-            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
-              <JobContextProvider>
-                <JobPage />
-              </JobContextProvider>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BaseLayout>
+      <JobContextProvider>
+        <Header />
+        <RecommendationContextProvider>
+          <RecommendationForm />
+          <Form />
+        </RecommendationContextProvider>
+      </JobContextProvider>
+    </BaseLayout>
   )
 }

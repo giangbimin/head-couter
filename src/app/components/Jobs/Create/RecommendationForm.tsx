@@ -1,3 +1,5 @@
+'use client'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -8,7 +10,7 @@ const validationSchema = z.object({
   description: z.string().min(1, 'description is required'),
 })
 
-const RecommendationForm = () => {
+export const RecommendationForm = () => {
   const {
     isModalOpen,
     setIsModalOpen,
@@ -174,5 +176,3 @@ const RecommendationForm = () => {
     </div>
   )
 }
-
-export default RecommendationForm

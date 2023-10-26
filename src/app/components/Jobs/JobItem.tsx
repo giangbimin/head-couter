@@ -1,6 +1,8 @@
+import Link from 'next/link'
 import { FC } from 'react'
 
 type JobProps = {
+  jId: string | undefined
   position: string
   tags: string[]
   recruiterName: string
@@ -11,6 +13,7 @@ type JobProps = {
 }
 
 const JobItem: FC<JobProps> = ({
+  jId,
   position,
   tags,
   recruiterName,
@@ -21,29 +24,23 @@ const JobItem: FC<JobProps> = ({
 }) => {
   return (
     <tr className="bg-white hover:bg-gray-50 dark:bg-slate-900 dark:hover:bg-slate-800">
-      <td className="h-px w-px whitespace-nowrap">
-        <div className="block h-full p-6">
-          <div className="flex items-center gap-x-4">
-            <div className="grow">
-              <a
-                className="block text-sm font-semibold text-gray-800 dark:text-gray-200"
-                href="/"
-              >
-                {position}
-              </a>
-              <div className="">
-                {tags.map((tag) => (
-                  <span className="m-1 inline-flex items-center gap-1.5 py-2 px-3 rounded-full text-sm bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+      <td className="px-6 py-4 w-[320px] flex flex-col gap-4">
+        <Link
+          className="block text-xl font-semibold text-gray-800 dark:text-gray-200"
+          href={`/jobs/${jId}`}
+        >
+          {position}
+        </Link>
+        <div className="block float-left">
+          {tags.slice(0, 4).map((tag) => (
+            <span className="inline-block text-xs font-medium mr-2 mb-2 px-3 py-2 rounded-md bg-blue-100 text-blue-800">
+              {tag}
+            </span>
+          ))}
         </div>
       </td>
-      <td className="h-px w-px whitespace-nowrap">
-        <a className="block h-full p-6" href="/">
+      <td className="px-6 py-4">
+        <div className="block h-full">
           <div className="flex items-center gap-x-3">
             <div className="grow">
               <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -54,25 +51,21 @@ const JobItem: FC<JobProps> = ({
               </span>
             </div>
           </div>
-        </a>
-      </td>
-      <td className="h-px w-72 min-w-[18rem]">
-        <div className="block h-full p-6">
-          <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-            {position}
-          </span>
-          <span className="block text-sm text-gray-500">{summary}</span>
         </div>
       </td>
-      <td className="h-px w-px whitespace-nowrap">
-        <div className="block h-full p-6">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
-            {deadline}
-          </span>
-        </div>
+      <td className="px-6 py-4">
+        <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
+          {position}
+        </span>
+        <span className="block text-sm text-gray-500">{summary}</span>
       </td>
-      <td className="h-px w-px whitespace-nowrap">
-        <a className="block h-full p-6" href="/">
+      <td className="px-6 py-4">
+        <span className="text-sm text-gray-600 dark:text-gray-400">
+          {deadline}
+        </span>
+      </td>
+      <td className="px-6 py-4">
+        <div className="block h-full">
           <span className="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
             <svg
               className="w-2.5 h-2.5"
@@ -86,7 +79,7 @@ const JobItem: FC<JobProps> = ({
             </svg>
             {status}
           </span>
-        </a>
+        </div>
       </td>
     </tr>
   )

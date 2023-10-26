@@ -1,65 +1,51 @@
+'use client'
+
+import useSWR from 'swr'
+import { Prisma } from '@prisma/client'
+import Loading from 'app/loading'
+import { useSearchParams } from 'next/navigation'
 import JobColumns from './JobColumns'
 import JobItem from './JobItem'
 
 const JobList = () => {
+  const searchParams = useSearchParams()
+  const title = searchParams.get('title') || ''
+  const page = searchParams.get('page') || '1'
+
+  const payload = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }
+  const fetcher = async (url: string) =>
+    fetch(url, payload).then((res) => res.json())
+  const { data, isLoading } = useSWR(
+    `/api/jobs?title=${title}&page=${page}`,
+    fetcher,
+    {},
+  )
+
+  if (isLoading) return <Loading text="jobs" />
+  if (!data) return null
+  const jobs = data as Prisma.JobCreateInput[]
   return (
-    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+    <table className="w-full divide-y divide-gray-200 dark:divide-gray-700">
       <JobColumns />
       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-        <JobItem
-          deadline="10 Jan 2024"
-          position="Senior Mobile developer"
-          recruiterEmail="gianghoang.dev@gmail.com"
-          recruiterName="Giang Hoang"
-          status="Draff"
-          summary=" I bought this hat for my boyfriend, but then i found out he cheated on me so I kept it and I love it!! I wear it all the time and there is no problem with the fit even though its a mens hat."
-          tags={['Android developer', 'Senior', 'Xcode']}
-        />
-        <JobItem
-          deadline="10 Jan 2024"
-          position="Senior Mobile developer"
-          recruiterEmail="gianghoang.dev@gmail.com"
-          recruiterName="Giang Hoang"
-          status="Draff"
-          summary=" I bought this hat for my boyfriend, but then i found out he cheated on me so I kept it and I love it!! I wear it all the time and there is no problem with the fit even though its a mens hat."
-          tags={['Android developer', 'Senior', 'Xcode']}
-        />
-        <JobItem
-          deadline="10 Jan 2024"
-          position="Senior Mobile developer"
-          recruiterEmail="gianghoang.dev@gmail.com"
-          recruiterName="Giang Hoang"
-          status="Draff"
-          summary=" I bought this hat for my boyfriend, but then i found out he cheated on me so I kept it and I love it!! I wear it all the time and there is no problem with the fit even though its a mens hat."
-          tags={['Android developer', 'Senior', 'Xcode']}
-        />
-        <JobItem
-          deadline="10 Jan 2024"
-          position="Senior Mobile developer"
-          recruiterEmail="gianghoang.dev@gmail.com"
-          recruiterName="Giang Hoang"
-          status="Draff"
-          summary=" I bought this hat for my boyfriend, but then i found out he cheated on me so I kept it and I love it!! I wear it all the time and there is no problem with the fit even though its a mens hat."
-          tags={['Android developer', 'Senior', 'Xcode']}
-        />{' '}
-        <JobItem
-          deadline="10 Jan 2024"
-          position="Senior Mobile developer"
-          recruiterEmail="gianghoang.dev@gmail.com"
-          recruiterName="Giang Hoang"
-          status="Draff"
-          summary=" I bought this hat for my boyfriend, but then i found out he cheated on me so I kept it and I love it!! I wear it all the time and there is no problem with the fit even though its a mens hat."
-          tags={['Android developer', 'Senior', 'Xcode']}
-        />
-        <JobItem
-          deadline="10 Jan 2024"
-          position="Senior Mobile developer"
-          recruiterEmail="gianghoang.dev@gmail.com"
-          recruiterName="Giang Hoang"
-          status="Draff"
-          summary=" I bought this hat for my boyfriend, but then i found out he cheated on me so I kept it and I love it!! I wear it all the time and there is no problem with the fit even though its a mens hat."
-          tags={['Android developer', 'Senior', 'Xcode']}
-        />
+        {jobs.map((job) => (
+          <JobItem
+            key={job.id}
+            deadline={job.deadline}
+            jId={job.id}
+            position={job.title}
+            recruiterEmail={job.contact}
+            recruiterName={job.contact}
+            status="Published"
+            summary={job.summary}
+            tags={job.tags.split(', ')}
+          />
+        ))}
       </tbody>
     </table>
   )

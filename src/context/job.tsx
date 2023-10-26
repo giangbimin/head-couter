@@ -4,7 +4,6 @@ import { createContext } from '@dwarvesf/react-utils'
 import { WithChildren } from 'types/common'
 import { Prisma } from '@prisma/client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { OpenAIRequest, getChatCompletions } from 'api'
 import { JdFormatter } from 'services/AIGenerator'
 
@@ -22,12 +21,13 @@ const defaultValues: Prisma.JobCreateInput = {
   deadline: '',
   contact: '',
   tags: '',
-  userId: '',
+  userId: '0',
 }
+
 interface JobContextValues {
   formValues: Prisma.JobCreateInput
   formatJD: (title: string, description: string) => void
-  createJob: (jobPayload: Prisma.JobCreateInput) => Promise<any>
+  createJob: (jobPayload: Prisma.JobCreateInput) => Promise<Response>
 }
 
 const [Provider, useJobContext] = createContext<JobContextValues>({
@@ -35,7 +35,6 @@ const [Provider, useJobContext] = createContext<JobContextValues>({
 })
 
 const JobContextProvider = ({ children }: WithChildren) => {
-  const routes = useRouter()
   const [formValues, setFormValues] =
     useState<Prisma.JobCreateInput>(defaultValues)
 
@@ -48,23 +47,8 @@ const JobContextProvider = ({ children }: WithChildren) => {
         },
         body: JSON.stringify(jobPayload),
       })
-      if (response.ok) {
-        // toast.success({
-        //   title: 'Job created',
-        //   message: 'created success!',
-        // })
-        routes.push('/jobs')
-      } else {
-        // toast.error({
-        //   title: 'failed',
-        //   message: 'created failed!',
-        // })
-      }
+      return response
     } catch (error) {
-      // toast.error({
-      //   title: 'failed',
-      //   message: 'created failed!',
-      // })
       throw new Error('Incorrect username or password')
     }
   }
@@ -81,7 +65,7 @@ const JobContextProvider = ({ children }: WithChildren) => {
       ) as Prisma.JobCreateInput
       setFormValues(data)
     } catch (error) {
-      throw new Error('Incorrect username or password')
+      throw new Error('Something errors')
     }
   }
   return (

@@ -13,7 +13,7 @@ const validationSchema = z.object({
   description: z.string().min(1, 'description is required'),
 })
 
-const Header = () => {
+export const Header = () => {
   const { formatJD } = useJobContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const {
@@ -155,4 +155,3 @@ const Header = () => {
     </div>
   )
 }
-export default Header

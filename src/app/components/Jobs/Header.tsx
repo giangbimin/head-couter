@@ -1,6 +1,31 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const Header = () => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()!
+  const title = searchParams.get('title') || ''
+  const [searchTerm, setSearchTerm] = useState(title)
+
+  const createQueryString = (name: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set(name, value)
+    return params.toString()
+  }
+
+  const search = () => {
+    router.push(`${pathname}?${createQueryString('title', searchTerm)}`)
+  }
+
+  useEffect(() => {
+    search()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm])
+
   return (
     <div className="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 dark:border-gray-700">
       <div className="sm:col-span-1">
@@ -13,6 +38,10 @@ const Header = () => {
               name="hs-as-table-product-review-search"
               placeholder="Search"
               type="text"
+              value={searchTerm}
+              onChange={(event) => {
+                setSearchTerm(event.target.value)
+              }}
             />
             <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none pl-4">
               <svg
@@ -69,7 +98,6 @@ const Header = () => {
                     className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 pointer-events-none focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
                     id="hs-as-filters-dropdown-all"
                     type="checkbox"
-                    checked
                   />
                   <span className="ml-3 text-sm text-gray-800 dark:text-gray-200">
                     All
