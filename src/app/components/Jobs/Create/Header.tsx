@@ -29,10 +29,15 @@ export const Header = () => {
   const onSubmit = async () => {
     try {
       const { title, description } = getValues()
-      await formatJD(title, description)
-      setIsModalOpen(false)
+      const status = await formatJD(title, description)
+      if (status) {
+        setIsModalOpen(false)
+        toast.success({ title: 'Generated success' })
+      } else {
+        toast.error({ title: 'GPT Failed, Please Try Again' })
+      }
     } catch (error) {
-      toast.error({ title: 'Invalid' })
+      toast.error({ title: 'GPT Failed, Please Try Again' })
     }
   }
 

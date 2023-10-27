@@ -26,7 +26,7 @@ const defaultValues: Prisma.JobCreateInput = {
 
 interface JobContextValues {
   formValues: Prisma.JobCreateInput
-  formatJD: (title: string, description: string) => void
+  formatJD: (title: string, description: string) => Promise<boolean>
   createJob: (jobPayload: Prisma.JobCreateInput) => Promise<Response>
 }
 
@@ -64,6 +64,7 @@ const JobContextProvider = ({ children }: WithChildren) => {
         res.choices[0].message.content,
       ) as Prisma.JobCreateInput
       setFormValues(data)
+      return true
     } catch (error) {
       throw new Error('Something errors')
     }

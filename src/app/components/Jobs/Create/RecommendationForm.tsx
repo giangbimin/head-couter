@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'components/Toast'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { useRecommendationContext } from 'context/recommendation'
@@ -44,8 +45,13 @@ export const RecommendationForm = () => {
     try {
       const { description } = getValues()
       await recommendationJD(description)
+      if (currentValues.length !== 0) {
+        toast.success({ title: 'GPT generate Success' })
+      } else {
+        toast.warning({ title: 'GPT generate Failed, please try again' })
+      }
     } catch (error) {
-      throw Error('Invalid data')
+      toast.error({ title: 'GPT generate Failed, please try again' })
     }
   }
 

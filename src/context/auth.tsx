@@ -8,7 +8,7 @@ import { emitter } from 'utils/emitter'
 
 interface AuthContextValues {
   isLogin: boolean
-  login: (loginRequest: LoginRequest) => Promise<any>
+  login: (loginRequest: LoginRequest) => Promise<void>
   logout: () => void
   user?: LoginResponseData | undefined
 }
@@ -17,33 +17,14 @@ const [Provider, useAuthContext] = createContext<AuthContextValues>({
   name: 'auth',
 })
 
-const tokenKey = 'bearer-token'
+const tokenKey = process.env.TOKEN_KEY || 'bearer'
 const userKey = 'current-user'
-const getToken = () => window.localStorage.getItem(tokenKey)
-const cleanAuth = () => {
-  window.localStorage.removeItem(tokenKey)
-  window.localStorage.removeItem(userKey)
-}
 
 const AuthContextProvider = ({ children }: WithChildren) => {
   const [isLogin, setIsLogin] = useState(() => {
     return isSSR() ? false : Boolean(window.localStorage.getItem(tokenKey))
   })
   const [user, setUser] = useState<LoginResponseData>()
-
-  const login = useCallback(async (loginRequest: LoginRequest) => {
-    try {
-      const res = await signIn(loginRequest)
-      if (res.data) {
-        setIsLogin(true)
-        window.localStorage.setItem(userKey, JSON.stringify(res.data))
-        setUser(res.data)
-        window.localStorage.setItem(tokenKey, res.data.accessToken)
-      }
-    } catch (error) {
-      throw new Error('Incorrect username or password')
-    }
-  }, [])
 
   const logout = useCallback(() => {
     setIsLogin(false)
@@ -72,9 +53,28 @@ const AuthContextProvider = ({ children }: WithChildren) => {
     }
   }, [isLogin, logout])
 
+  const login = async (loginRequest: LoginRequest) => {
+    try {
+      const res = await signIn(loginRequest)
+      if (res.data) {
+        setIsLogin(true)
+        window.localStorage.setItem(userKey, JSON.stringify(res.data))
+        setUser(res.data)
+        window.localStorage.setItem(tokenKey, res.data.accessToken)
+      }
+    } catch (error) {
+      throw new Error('Incorrect username or password')
+    }
+  }
+
+  const cleanAuth = () => {
+    window.localStorage.removeItem(tokenKey)
+    window.localStorage.removeItem(userKey)
+  }
+
   return (
     <Provider value={{ isLogin, login, logout, user }}>{children}</Provider>
   )
 }
 
-export { AuthContextProvider, useAuthContext, getToken }
+export { AuthContextProvider, useAuthContext }

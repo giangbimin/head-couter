@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { useAuthContext } from 'context/auth'
 import { useRouter } from 'next/navigation'
-import { ROUTES } from 'constants/routes'
 import { toast } from 'components/Toast'
 import { useForm } from 'react-hook-form'
+import { LoginRequest } from 'api'
 
 const loginFormDefaultValues = { username: '', password: '' }
 const validationSchema = z.object({
@@ -21,24 +21,29 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { isSubmitting },
   } = useForm({
     defaultValues: loginFormDefaultValues,
     resolver: zodResolver(validationSchema),
   })
 
-  const onSubmit = async (data: typeof loginFormDefaultValues) => {
+  const onSubmit = async () => {
     try {
+      const data = getValues() as LoginRequest
       await login(data)
+      if (isLogin) {
+        toast.success({ title: 'Login Success' })
+      } else {
+        toast.error({ title: 'Invalid username or password' })
+      }
     } catch (error) {
       toast.error({ title: 'Invalid username or password' })
     }
   }
 
   useEffect(() => {
-    if (isLogin) {
-      push(ROUTES.DASHBOARD)
-    }
+    if (isLogin) push('/jobs')
   }, [isLogin, push])
 
   return (

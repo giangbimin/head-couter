@@ -21,21 +21,21 @@ export const Default = () => {
       </Alert>
 
       <Alert status="info" onClose={() => alert('close me!')}>
-        <AlertIcon />
+        <AlertIcon status="info" />
         <AlertBody>
           <AlertTitle>Information</AlertTitle>
         </AlertBody>
       </Alert>
 
       <Alert status="success" onClose={() => alert('close me!')}>
-        <AlertIcon />
+        <AlertIcon status="success" />
         <AlertBody>
           <AlertTitle>Buy Character Successfully!</AlertTitle>
         </AlertBody>
       </Alert>
 
       <Alert status="warning" onClose={() => alert('close me!')}>
-        <AlertIcon />
+        <AlertIcon status="warning" />
         <AlertBody>
           <AlertTitle>Information</AlertTitle>
           <AlertContent>

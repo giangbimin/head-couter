@@ -63,7 +63,7 @@ export function toast(props: ToastProps) {
         }}
         {...rest}
       >
-        <AlertIcon />
+        <AlertIcon status={status} />
         <AlertBody>
           <AlertTitle>{title}</AlertTitle>
           {message && <AlertContent>{message}</AlertContent>}

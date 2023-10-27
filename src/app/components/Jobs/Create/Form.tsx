@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'components/Toast'
 import { Prisma } from '@prisma/client'
 import { useJobContext } from 'context/job'
 import { useEffect } from 'react'
@@ -89,8 +90,17 @@ export const Form = () => {
 
   const onSubmit = async () => {
     const data = getValues() as Prisma.JobCreateInput
-    const response = await createJob(data)
-    if (response.ok) routes.push('/jobs')
+    try {
+      const response = await createJob(data)
+      if (response.ok) {
+        routes.push('/jobs')
+        toast.success({ title: 'Job Create Success' })
+      } else {
+        toast.error({ title: 'Job Create Failed' })
+      }
+    } catch (error) {
+      toast.error({ title: 'Error please try again' })
+    }
   }
 
   const showRecommendationForm = (field: FormField) => {
